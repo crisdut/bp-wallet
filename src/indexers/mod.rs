@@ -27,7 +27,7 @@ use descriptors::Descriptor;
 
 use crate::{Layer2, MayError, WalletCache, WalletDescr};
 
-pub(self) const BATCH_SIZE: u8 = 10;
+pub(self) const _BATCH_SIZE: u8 = 10;
 
 pub trait Indexer {
     type Error;

@@ -127,11 +127,15 @@ impl<K, D: Descriptor<K>, L2: Layer2Descriptor> WalletDescr<K, D, L2> {
 impl<K, D: Descriptor<K>, L2: Layer2Descriptor> Deref for WalletDescr<K, D, L2> {
     type Target = D;
 
-    fn deref(&self) -> &Self::Target { &self.generator }
+    fn deref(&self) -> &Self::Target {
+        &self.generator
+    }
 }
 
 impl<K, D: Descriptor<K>, L2: Layer2Descriptor> DerefMut for WalletDescr<K, D, L2> {
-    fn deref_mut(&mut self) -> &mut Self::Target { &mut self.generator }
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.generator
+    }
 }
 
 #[cfg_attr(feature = "serde", cfg_eval, serde_as)]
@@ -167,17 +171,19 @@ pub struct WalletData<L2: Layer2Data> {
 )]
 #[derive(Clone, Eq, PartialEq, Debug)]
 pub struct WalletCache<L2: Layer2Cache> {
-    pub(crate) last_block: MiningInfo,
-    pub(crate) last_change: NormalIndex,
-    pub(crate) headers: BTreeSet<BlockInfo>,
-    pub(crate) tx: BTreeMap<Txid, WalletTx>,
-    pub(crate) utxo: BTreeSet<Outpoint>,
-    pub(crate) addr: BTreeMap<Keychain, BTreeSet<WalletAddr>>,
-    pub(crate) layer2: L2,
+    pub last_block: MiningInfo,
+    pub last_change: NormalIndex,
+    pub headers: BTreeSet<BlockInfo>,
+    pub tx: BTreeMap<Txid, WalletTx>,
+    pub utxo: BTreeSet<Outpoint>,
+    pub addr: BTreeMap<Keychain, BTreeSet<WalletAddr>>,
+    pub layer2: L2,
 }
 
 impl<L2: Layer2Cache> Default for WalletCache<L2> {
-    fn default() -> Self { WalletCache::new() }
+    fn default() -> Self {
+        WalletCache::new()
+    }
 }
 
 impl<L2C: Layer2Cache> WalletCache<L2C> {
@@ -247,7 +253,7 @@ impl<L2C: Layer2Cache> WalletCache<L2C> {
     }
 }
 
-#[derive(Clone, Eq, PartialEq, Debug)]
+#[derive(Getters, Clone, Eq, PartialEq, Debug)]
 pub struct Wallet<K, D: Descriptor<K>, L2: Layer2 = NoLayer2> {
     pub(crate) descr: WalletDescr<K, D, L2::Descr>,
     pub(crate) data: WalletData<L2::Data>,
@@ -258,11 +264,15 @@ pub struct Wallet<K, D: Descriptor<K>, L2: Layer2 = NoLayer2> {
 impl<K, D: Descriptor<K>, L2: Layer2> Deref for Wallet<K, D, L2> {
     type Target = WalletDescr<K, D, L2::Descr>;
 
-    fn deref(&self) -> &Self::Target { &self.descr }
+    fn deref(&self) -> &Self::Target {
+        &self.descr
+    }
 }
 
 impl<K, D: Descriptor<K>, L2: Layer2> DerefMut for Wallet<K, D, L2> {
-    fn deref_mut(&mut self) -> &mut Self::Target { &mut self.descr }
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.descr
+    }
 }
 
 impl<K, D: Descriptor<K>> Wallet<K, D, NoLayer2> {
@@ -320,7 +330,9 @@ impl<K, D: Descriptor<K>, L2: Layer2> Wallet<K, D, L2> {
         }
     }
 
-    pub fn set_name(&mut self, name: String) { self.data.name = name; }
+    pub fn set_name(&mut self, name: String) {
+        self.data.name = name;
+    }
 
     pub fn update<B: Indexer>(&mut self, blockchain: &B) -> MayError<(), Vec<B::Error>> {
         WalletCache::with::<_, K, _, L2>(&self.descr, blockchain).map(|cache| self.cache = cache)
@@ -377,10 +389,14 @@ impl<K, D: Descriptor<K>, L2: Layer2> Wallet<K, D, L2> {
             .addr
     }
 
-    pub fn balance(&self) -> Sats { self.cache.coins().map(|utxo| utxo.amount).sum::<Sats>() }
+    pub fn balance(&self) -> Sats {
+        self.cache.coins().map(|utxo| utxo.amount).sum::<Sats>()
+    }
 
     #[inline]
-    pub fn transactions(&self) -> &BTreeMap<Txid, WalletTx> { &self.cache.tx }
+    pub fn transactions(&self) -> &BTreeMap<Txid, WalletTx> {
+        &self.cache.tx
+    }
 
     #[inline]
     pub fn coins(&self) -> impl Iterator<Item = CoinRow<<L2::Cache as Layer2Cache>::Coin>> + '_ {
@@ -410,7 +426,9 @@ impl<K, D: Descriptor<K>, L2: Layer2> Wallet<K, D, L2> {
         self.cache.utxo(outpoint)
     }
 
-    pub fn all_utxos(&self) -> impl Iterator<Item = WalletUtxo> + '_ { self.cache.all_utxos() }
+    pub fn all_utxos(&self) -> impl Iterator<Item = WalletUtxo> + '_ {
+        self.cache.all_utxos()
+    }
 
     pub fn coinselect<'a>(
         &'a self,
