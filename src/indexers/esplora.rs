@@ -27,10 +27,8 @@ use bpstd::{Address, LockTime, Outpoint, SeqNo, Witness};
 use descriptors::Descriptor;
 use esplora::{BlockingClient, Error};
 
-use super::BATCH_SIZE;
 use crate::{
-    Indexer, Layer2, MayError, MiningInfo, Party, TxCredit, TxDebit, TxStatus, WalletAddr,
-    WalletCache, WalletDescr, WalletTx,
+    indexers::BATCH_SIZE, Indexer, Layer2, MayError, MiningInfo, Party, TxCredit, TxDebit, TxStatus, WalletAddr, WalletCache, WalletDescr, WalletTx
 };
 
 impl From<esplora::TxStatus> for TxStatus {
